@@ -50,16 +50,36 @@ pipeline {
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
+                    set -eu
+
+                    git config --global --add safe.directory "$WORKSPACE"
+
+                    echo "Current Directory: "
+                    pwd
+                    echo "Checking Git repository: "
+                    git rev-parse --show-toplevel
+
                     git config user.email "lokeshjatothit@gmail.com"
                     git config user.name "lokeshjatoth"
 
-                    BUILD_NUMBER=${BUILD_NUMBER}
+                    MANIFEST="java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml"
+
+                    test -f "$MANIFEST"
+
                     sed -i -E \
                       "s|(image:[[:space:]]*jatothlokesh/cicd-pipeline:).*|\\1${BUILD_NUMBER}|" \
-                      java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                      "$MANIFEST"
+
+                    git add "$MANIFEST"
+
+                    if ! git diff --cached --quiet; then
+                        git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                        git push \
+                          "https://github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git" \
+                          HEAD:main
+                    else
+                        echo "No manifest changes to commit."
+                    fi
                 '''
             }
         }
