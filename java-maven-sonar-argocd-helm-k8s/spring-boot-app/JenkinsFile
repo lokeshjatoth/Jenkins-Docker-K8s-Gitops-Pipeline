@@ -52,6 +52,8 @@ pipeline {
                 sh '''
                     set -eu
 
+                    git config --global --add safe.directory "$WORKSPACE"
+
                     echo "Current Directory: "
                     pwd
                     echo "Checking Git repository: "
