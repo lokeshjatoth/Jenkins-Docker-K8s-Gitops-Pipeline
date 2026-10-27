@@ -75,7 +75,7 @@ pipeline {
                     if ! git diff --cached --quiet; then
                         git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                         git push \
-                          "https://github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git" \
+                          "https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git" \
                           HEAD:main
                     else
                         echo "No manifest changes to commit."
