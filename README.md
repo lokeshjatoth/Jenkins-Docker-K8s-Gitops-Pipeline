@@ -138,4 +138,31 @@ The docker agent configuration is now successful.
 
 
 
+## CI/CD Pipeline Execution and Deployment Screenshots
+
+### 1. Jenkins CI/CD Pipeline
+
+The Jenkins pipeline automates source code checkout, build and testing, static code analysis, Docker image creation and publishing, and deployment file updates.
+
+![Jenkins CI/CD Pipeline](./files/Jenkins-CICD-Pipeline.png)
+
+### 2. SonarQube Code Quality Analysis
+
+SonarQube analyzes the application's code quality and displays the Quality Gate status. The analysis shown below passed the Quality Gate.
+
+![SonarQube Code Quality Analysis](./files/SonarQube-Quality-Analysis.png)
+
+### 3. Argo CD GitOps Deployment
+
+Argo CD synchronizes the Kubernetes deployment with the desired configuration stored in Git. The application is healthy and synchronized with the latest commit.
+
+![Argo CD GitOps Deployment](./files/ArgoCD-GitOps-Deployment.png)
+
+### 4. Kubernetes Deployment and Pod Status
+
+The following output confirms that the Spring Boot application has two running pods and that the Argo CD application components are deployed in the cluster.
+
+![Kubernetes Deployments and Pods](./files/Kubernetes-Pods-Status.png)
+
+
 
