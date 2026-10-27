@@ -3,8 +3,6 @@ pipeline {
     docker {
       image 'jatothlokesh/jenkins-maven-docker-java25-agent:v2'
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
-      registryCredentialsId 'docker-cred'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
   stages {
@@ -56,8 +54,9 @@ pipeline {
                     git config user.name "lokeshjatoth"
 
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s|\(cicd-pipeline:\).*|\1${BUILD_NUMBER}|" \
-                               java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                    sed -i -E \
+                      "s|(image:[[:space:]]*jatothlokesh/cicd-pipeline:).*|\\1${BUILD_NUMBER}|" \
+                      java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
